@@ -1,0 +1,9 @@
+*.pyc
+app/config/development.py
+app/config/testing.py
+app/config/production.py
+venv
+.idea/
+app/GTAGS
+app/GRTAGS
+app/GPATH
