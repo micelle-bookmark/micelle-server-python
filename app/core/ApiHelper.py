@@ -12,6 +12,7 @@ from .utils import format_exception, make_correct_resp, make_error_resp
 # 日志输出对象
 _log = CLogHelper.logger
 
+# TODO: 尝试使用元类来序列化参数
 
 def is_argument_exists(req_args, args_name):
     """
