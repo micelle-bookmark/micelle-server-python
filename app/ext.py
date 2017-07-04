@@ -4,8 +4,8 @@
 from flask_redis import FlaskRedis
 from flask_sqlalchemy import SQLAlchemy
 
-from core.ConfigHelper import CConfigHelper
-from core.LogHelper import CLogHelper
+from base.ConfigHelper import CConfigHelper
+from base.LogHelper import CLogHelper
 
 # log对象
 log = CLogHelper()

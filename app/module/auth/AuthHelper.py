@@ -3,7 +3,7 @@
 
 from flask import request
 
-from core import AppError
+from base import AppError
 from ext import cache
 
 # 保存TOKEN值的redis.key
