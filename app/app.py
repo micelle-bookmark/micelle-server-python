@@ -18,6 +18,7 @@ def _register_blueprints(root, var_app):
     for name in find_modules(root, recursive=False):
         mod = import_string(name)
         if hasattr(mod, 'bp') and hasattr(mod, 'url_prefix'):
+            print 'loading module {}'.format(name)
             var_app.register_blueprint(mod.bp, url_prefix=mod.url_prefix)
 
 
@@ -51,11 +52,6 @@ def create_app():
     from config import load_config
     app_obj.config.from_object(load_config())
 
-    # from ext import log, conf, db, cache
-    # log.init_app(app_obj)
-    # conf.init_app(app_obj)
-    # db.init_app(app_obj)
-    # cache.init_app(app_obj)
     _init_ext_module(app_obj)
 
     _register_blueprints('views', app_obj)
@@ -67,4 +63,4 @@ def create_app():
 app = create_app()
 
 if __name__ == '__main__':
-    app.run()
+    app.run(use_reloader=False)

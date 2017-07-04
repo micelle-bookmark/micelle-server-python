@@ -3,6 +3,7 @@
 用户接口
 '''
 
+import marshmallow
 from flask.blueprints import Blueprint
 
 from base import AppError, utils
