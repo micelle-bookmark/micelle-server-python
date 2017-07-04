@@ -3,9 +3,8 @@
 
 from flask.blueprints import Blueprint
 
-from core import AppError, utils
+from base import AppError, utils
 from ext import log
-
 
 # 蓝图对象
 bp = Blueprint('task', __name__)
@@ -14,7 +13,7 @@ url_prefix = '/task'
 
 
 @bp.route('', methods=['GET'])
-@utils.get_require_check(['type'])
+# @utils.get_require_check(['type'])
 def api_task_index(args):
     '''
     定时任务接口
@@ -23,4 +22,3 @@ def api_task_index(args):
         args.type: 未使用
     '''
     return {}
-
