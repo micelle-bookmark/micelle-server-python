@@ -63,4 +63,5 @@ def create_app():
 app = create_app()
 
 if __name__ == '__main__':
+    # use_reloader disable App load twice
     app.run(use_reloader=False)
