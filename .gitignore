@@ -7,3 +7,4 @@ venv
 app/GTAGS
 app/GRTAGS
 app/GPATH
+.vscode
