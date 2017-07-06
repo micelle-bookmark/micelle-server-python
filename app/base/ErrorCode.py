@@ -1,0 +1,6 @@
+# coding=utf-8
+"""错误码定义模块"""
+
+
+ERROR_POST_ARGS_MUST_BE_JSON = 1000001
+ERROR_POST_ARGS_LOADS_FAIL = 1000002

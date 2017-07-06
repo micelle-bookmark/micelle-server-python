@@ -5,14 +5,41 @@ from functools import wraps
 
 from flask import jsonify, request
 
-from .AppError import ApiArgsError, AppErrorBase
-from .LogHelper import CLogHelper
-from .utils import format_exception, make_correct_resp, make_error_resp
+from core import ErrorCode
+from core.AppError import ApiArgsError, AppErrorBase
+from core.LogHelper import CLogHelper
+from core.utils import format_exception, make_correct_resp, make_error_resp
 
 # 日志输出对象
 _log = CLogHelper.logger
 
 # TODO: 尝试使用元类来序列化参数
+
+
+def _parse_post_args(req):
+    """
+    解析 POST 请求的参数, 约定使用 HTTP BODY 传递, 格式为 json.
+
+    args:
+        req: flask.request实体
+
+    return:
+        解析得到的参数字典. 可为None.
+
+    exception:
+        ApiArgsError.
+    """
+    if not req.is_json:
+        raise ApiArgsError(ErrorCode.ERROR_POST_ARGS_MUST_BE_JSON,
+                           u"POST 请求参数需要 JSON 格式的 HTTP BODY")
+
+    try:
+        r = req.get_json()
+        return r
+    except Exception as ex:
+        raise ApiArgsError(ErrorCode.ERROR_POST_ARGS_LOADS_FAIL,
+                           u"POST 请求中参数 LOADS 错误, {}".format(unicode(ex)))
+
 
 def is_argument_exists(req_args, args_name):
     """

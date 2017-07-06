@@ -7,15 +7,21 @@ class AppErrorBase(Exception):
     应用错误基类
     """
 
-    def __init__(self, code, msg):
+    def __init__(self, code, msg, http_status=200):
         """
         args:
             code: 错误码
             msg: 错误信息
+            http_code: 要返回的 HTTP STATUS CODE
         """
         self.error_code = code
         self.error_msg = msg
+        self.http_status = http_status
         super(AppErrorBase, self).__init__()
+
+    @property
+    def status(self):
+        return self.http_status
 
     def __unicode__(self):
         """

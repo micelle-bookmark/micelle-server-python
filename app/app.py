@@ -31,6 +31,7 @@ def _init_ext_module(var_app):
     '''
     def _is_variable(attr):
         return not inspect.isclass(attr) and not inspect.ismodule(attr)
+
     def _process_with_attr(attr_name, m):
         attr = getattr(m, attr_name)
         if _is_variable(attr):
