@@ -14,7 +14,7 @@ log = CLogHelper()
 conf = CConfigHelper()
 
 # db对象
-db = SQLAlchemy()
+# db = SQLAlchemy()
 
 # cache对象
 cache = FlaskRedis()

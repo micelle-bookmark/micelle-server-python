@@ -4,6 +4,7 @@
 from functools import wraps
 
 from flask import jsonify, request
+from marshmallow import ValidationError
 
 from core import ErrorCode
 from core.AppError import ApiArgsError, AppErrorBase
@@ -13,10 +14,8 @@ from core.utils import format_exception, make_correct_resp, make_error_resp
 # 日志输出对象
 _log = CLogHelper.logger
 
-# TODO: 尝试使用元类来序列化参数
 
-
-def _parse_post_args(req):
+def _loads_post_args(req):
     """
     解析 POST 请求的参数, 约定使用 HTTP BODY 传递, 格式为 json.
 
@@ -41,27 +40,9 @@ def _parse_post_args(req):
                            u"POST 请求中参数 LOADS 错误, {}".format(unicode(ex)))
 
 
-def is_argument_exists(req_args, args_name):
+def _loads_get_args(req):
     """
-    判断参数是否存在.
-
-    args:
-        req_args: 请求参数字典
-        args_name: 必需的参数名称列表
-
-    return:
-        None. 所有参数都存在
-        string. 不存在的参数名
-    """
-    for arg_name in args_name:
-        if arg_name not in req_args:
-            return arg_name
-    return None
-
-
-def parse_post_args(req):
-    """
-    解析post请求的json参数体, 约定POST请求的参数使用http body传递.
+    解析 GET 请求的参数, 约定使用 URL 传递.
 
     args:
         req: flask.request实体
@@ -72,133 +53,10 @@ def parse_post_args(req):
     exception:
         ApiArgsError.
     """
-    if not req.is_json:
-        raise ApiArgsError(1, u'需要json格式的请求体')
-
-    try:
-        req_args = req.get_json()
-        return req_args
-    except:
-        raise ApiArgsError(5, u'参数json反序列化错误')
+    return req.values
 
 
-def post_check_args(req, args_name):
-    '''
-    校验POST请求中的参数. args_name长度为0时不解析参数, 返回None.
 
-    args:
-        req: flask.request实体
-        args_name: 参数名称列表，例如['name', 'password']
-
-    return:
-        解析得到的参数字典. 可为None.
-
-    exception:
-        ApiArgsError.
-    '''
-    if len(args_name) == 0:
-        return None
-
-    req_args = parse_post_args(req)
-
-    non_exists_name = is_argument_exists(req_args, args_name)
-    if non_exists_name:
-        raise ApiArgsError(2, u'缺少参数 {}'.format(non_exists_name))
-    return req_args
-
-
-def get_check_args(req, args_name):
-    '''
-    校验GET请求中的参数. args_name长度为0时不解析参数, 返回None. 约定GET请求的参数在url中传递
-
-    args:
-        req: flask.request实体
-        args_name: 参数名称列表，例如['name', 'password']
-
-    return:
-        解析得到的参数字典. 可为None.
-
-    exception:
-        ApiArgsError.
-    '''
-    if len(args_name) == 0:
-        return None
-
-    req_args = req.values
-    non_exists_name = is_argument_exists(req_args, args_name)
-    if non_exists_name:
-        raise ApiArgsError(2, u'缺少参数 {}'.format(non_exists_name))
-    return req_args
-
-
-class ArgsType(object):
-    '''参数单元定义'''
-    def __init__(self, name, convert=None, dest_name=None, require=True):
-        '''
-        args:
-            name: 参数名
-            convert: 转换为目标类型
-            dest_name: 目标名称
-            require: 是否必须
-        '''
-        self.name = name
-        self.convert = convert
-        self.dest_name = dest_name
-        self.require = require
-
-
-class ArgsChecker(object):
-    '''参数检查类'''
-
-    def __init__(self, names):
-        '''
-        args:
-            names: 参数名列表
-        '''
-        assert isinstance(names, (list,))
-
-        self.names = names
-        super(ArgsChecker, self).__init__()
-
-    def __call__(self, curr_req):
-        raise NotImplementedError
-
-
-class BodyArgsChecker(ArgsChecker):
-    '''http body请求参数检查类'''
-
-    def __init__(self, names):
-        '''
-        args:
-            names: 参数名列表
-        '''
-        super(BodyArgsChecker, self).__init__(names)
-
-    def __call__(self, curr_req):
-        raise NotImplementedError
-
-
-class UrlArgsChecker(ArgsChecker):
-    '''http url请求参数检查类'''
-
-    def __init__(self, names):
-        '''
-        args:
-            names: 参数名列表
-        '''
-        super(UrlArgsChecker, self).__init__(names)
-
-    def __call__(self, curr_req):
-        raise NotImplementedError
-
-
-class AuthChecker(ArgsChecker):
-    '''登录认证检查类'''
-    def __init__(self):
-        super(AuthChecker, self).__init__([])
-
-    def __call__(self, curr_req):
-        raise NotImplementedError
 
 
 def api_require_check(checker):

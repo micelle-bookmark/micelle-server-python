@@ -29,7 +29,7 @@ class UserRegisterArgs(marshmallow.Schema):
     pass
 
 
-@bp.route("register", methods=["POST"])
+@bp.route("register", methods=["GET"])
 def api_user_register():
     """
     用户注册接口
