@@ -2,10 +2,12 @@
 '''扩展模块'''
 
 from flask_redis import FlaskRedis
-from flask_sqlalchemy import SQLAlchemy
 
 from base.ConfigHelper import CConfigHelper
 from base.LogHelper import CLogHelper
+
+# from flask_sqlalchemy import SQLAlchemy
+
 
 # log对象
 log = CLogHelper()

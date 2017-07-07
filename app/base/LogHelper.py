@@ -1,14 +1,27 @@
 # coding=utf-8
 ''' 日志输出模块 '''
 
-import json
+# import json
 import threading
-from functools import partial
+from datetime import datetime
+
+# from functools import partial
 
 # 日志等级定义
 LOG_LEVEL = {'debug': 0, 'info': 1, 'warning': 2, 'error': 3, 'critical': 4}
 
-_dumps = partial(json.dumps, ensure_ascii=False)
+
+# _dumps = partial(json.dumps, ensure_ascii=False)
+def _log_format(l):
+    return u'{} [{}] [{}] [{}] {}'.format(
+        str(datetime.now()),
+        l['topic'],
+        l['serviceName'],
+        l['sequenceId'],
+        l['content'])
+
+
+_dumps = _log_format
 
 
 class CLogHelper(object):
