@@ -73,6 +73,8 @@ def api_args_parser(cls, loads_fn, name="cls"):
                 args = cls.load(loads_fn(request))
                 kwargs[name] = args
                 r = fn(*klargs, **kwargs)
+                if not isinstance(r, ('dict')):
+                    r = r.dump()
                 return jsonify(make_correct_resp(r))
             except AppErrorBase as ex:
                 _log.error(unicode(ex))
