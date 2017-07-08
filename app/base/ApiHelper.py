@@ -1,10 +1,9 @@
 # coding=utf-8
 '''API接口帮助模块'''
 
-from functools import wraps
+from functools import partial, wraps
 
 from flask import jsonify, request
-from marshmallow import ValidationError
 
 from core import ErrorCode
 from core.AppError import ApiArgsError, AppErrorBase
@@ -56,29 +55,24 @@ def _loads_get_args(req):
     return req.values
 
 
+def api_args_parser(cls, loads_fn, name="cls"):
+    """
+    参数解析装饰器
 
-
-
-def api_require_check(checker):
-    '''
-    API接口请求参数校验装饰器
-
-    args:
-        checker: 参数检查类
-    '''
-    def _api_require_check_wrapper(fn):
-        '''
-        请求校验包装函数, 校验通过则调用fn, 否则抛出AppErrorBase异常
-
+    cls:
+        参数类, 需要实现 load 接口
+    """
+    def _api_parser_wrapper(fn):
+        """
         args:
-            fn: 请求处理函数
-        '''
+            fn: 处理函数
+        """
         @wraps(fn)
-        def __wrapper(**kwargs):
+        def __wrapper(*klargs, **kwargs):
             try:
-                args = checker(request)
-                kwargs.update(args)
-                r = fn(**kwargs)
+                args = cls.load(loads_fn(request))
+                kwargs[name] = args
+                r = fn(*klargs, **kwargs)
                 return jsonify(make_correct_resp(r))
             except AppErrorBase as ex:
                 _log.error(unicode(ex))
@@ -87,68 +81,8 @@ def api_require_check(checker):
                 _log.critical(u'[未知错误]{}'.format(format_exception(ex)))
                 return jsonify(make_error_resp(999, u'未知错误'))
         return __wrapper
-    return _api_require_check_wrapper
+    return _api_parser_wrapper
 
 
-def post_require_check(args_name):
-    '''
-    decorator.
-    用于校验POST请求中的参数是否存在. 参数在http body中, json字符串.
-    '''
-
-    def post_require_check_wrapper(fn):
-        '''
-        包装函数.
-        校验POST请求中的参数, 通过则用调用fn. 否则抛出AppErrorBase异常.
-        '''
-
-        @wraps(fn)
-        def __wrapper(**arg):
-            try:
-                args = None
-                if len(args_name):
-                    args = post_check_args(request, args_name)
-                r = fn(args, **arg)
-                return jsonify(make_correct_resp(r))
-            except AppErrorBase as ex:
-                _log.error(unicode(ex))
-                return jsonify(make_error_resp(ex.error_code, ex.error_msg))
-            except Exception as ex:
-                _log.critical(u'[未知错误]{}'.format(format_exception(ex)))
-                return jsonify(make_error_resp(999, u'未知错误'))
-
-        return __wrapper
-
-    return post_require_check_wrapper
-
-
-def get_require_check(args_name):
-    '''
-    decorator.
-    用于校验GET请求中的参数是否存在. 参数在http url中.
-    '''
-
-    def get_require_check_wrapper(fn):
-        '''
-        包装函数.
-        校验GET请求中的参数, 通过则用调用fn. 否则抛出AppErrorBase异常.
-        '''
-
-        @wraps(fn)
-        def __wrapper(**arg):
-            try:
-                args = None
-                if len(args_name):
-                    args = get_check_args(request, args_name)
-                r = fn(args, **arg)
-                return jsonify(make_correct_resp(r))
-            except AppErrorBase as ex:
-                _log.error(unicode(ex))
-                return jsonify(make_error_resp(ex.error_code, ex.error_msg))
-            except Exception as ex:
-                _log.critical(u'[未知错误]{}'.format(format_exception(ex)))
-                return jsonify(make_error_resp(999, u'未知错误'))
-
-        return __wrapper
-
-    return get_require_check_wrapper
+api_get_args_parser = partial(api_args_parser, loads_fn=_loads_get_args)
+api_post_args_parser = partial(api_args_parser, loads_fn=_loads_post_args)

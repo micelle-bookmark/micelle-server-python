@@ -3,7 +3,6 @@
 用户接口
 '''
 
-import marshmallow
 from flask.blueprints import Blueprint
 
 from base import AppError, utils
@@ -20,13 +19,6 @@ def _gen_token(key, expires, user_id):
     from itsdangerous import TimedJSONWebSignatureSerializer
     token = TimedJSONWebSignatureSerializer(secret_key=key, expires_in=expires)
     return token.dumps({'id': user_id})
-
-
-class UserRegisterArgs(marshmallow.Schema):
-    """
-    用户注册接口参数结构
-    """
-    pass
 
 
 @bp.route("register", methods=["GET"])
