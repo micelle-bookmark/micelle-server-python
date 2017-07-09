@@ -79,10 +79,11 @@ def api_args_parser(cls, loads_fn, name="cls"):
                 return jsonify(make_correct_resp(r))
             except AppErrorBase as ex:
                 _log.error(unicode(ex))
-                return jsonify(make_error_resp(ex.error_code, ex.error_msg))
+                return jsonify(make_error_resp(ex.error_code, ex.error_msg)), \
+                    ex.status
             except Exception as ex:
                 _log.critical(u'[未知错误]{}'.format(format_exception(ex)))
-                return jsonify(make_error_resp(999, u'未知错误'))
+                return jsonify(make_error_resp(999, u'未知错误')), 500
         return __wrapper
     return _api_parser_wrapper
 

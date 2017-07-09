@@ -21,7 +21,10 @@ def api_index():
     """
     首页接口
     """
-    return {"service": "micelle"}
+    return {
+        "service": "micelle",
+        "version": "v1.0.0"
+    }
 
 
 # 这个 before 会对所有 request 生效
