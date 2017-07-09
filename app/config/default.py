@@ -26,5 +26,5 @@ class Config(object):
     # REDIS_URL = "redis://:password@localhost:6379/0"
 
     # App config
-    APP_SERVICE_NAME = 'Flask'
+    APP_SERVICE_NAME = 'micelle'
     APP_LOG_LEVEL = 'info'

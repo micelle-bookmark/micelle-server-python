@@ -1,9 +1,12 @@
 # coding=utf-8
 '''服务信息'''
 
-from flask import jsonify, request
+import uuid
+
+from flask import request
 from flask.blueprints import Blueprint
 
+from base import ApiHelper
 from ext import log
 
 # 蓝图对象
@@ -13,16 +16,16 @@ url_prefix = ''
 
 
 @bp.route("/", methods=["GET"])
+@ApiHelper.api_get_args_parser(None)
 def api_index():
     """
     首页接口
     """
-    log.info("index")
-
-    return jsonify({"service": "micelle"})
+    return {"service": "micelle"}
 
 
 # 这个 before 会对所有 request 生效
 @bp.before_app_request
 def _before_apop_request():
-    log.info(u"Start Process URL: {}".format(request.url))
+    log.sequence_id = uuid.uuid1().get_hex()
+    log.info(u"{} {}".format(request.method, request.url))

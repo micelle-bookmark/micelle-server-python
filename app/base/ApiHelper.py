@@ -5,10 +5,10 @@ from functools import partial, wraps
 
 from flask import jsonify, request
 
-from core import ErrorCode
-from core.AppError import ApiArgsError, AppErrorBase
-from core.LogHelper import CLogHelper
-from core.utils import format_exception, make_correct_resp, make_error_resp
+from base import ErrorCode
+from base.AppError import ApiArgsError, AppErrorBase
+from base.LogHelper import CLogHelper
+from base.utils import format_exception, make_correct_resp, make_error_resp
 
 # 日志输出对象
 _log = CLogHelper.logger
@@ -70,10 +70,11 @@ def api_args_parser(cls, loads_fn, name="cls"):
         @wraps(fn)
         def __wrapper(*klargs, **kwargs):
             try:
-                args = cls.load(loads_fn(request))
-                kwargs[name] = args
+                if cls is not None:
+                    args = cls.load(loads_fn(request))
+                    kwargs[name] = args
                 r = fn(*klargs, **kwargs)
-                if not isinstance(r, ('dict')):
+                if not isinstance(r, (dict)):
                     r = r.dump()
                 return jsonify(make_correct_resp(r))
             except AppErrorBase as ex:

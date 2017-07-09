@@ -55,6 +55,7 @@ def create_app():
 
     _init_ext_module(app_obj)
 
+    from views import index
     _register_blueprints('views', app_obj)
 
     return app_obj
