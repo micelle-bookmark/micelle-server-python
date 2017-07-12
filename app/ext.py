@@ -2,12 +2,10 @@
 '''扩展模块'''
 
 from flask_redis import FlaskRedis
+from flask_sqlalchemy import SQLAlchemy
 
 from base.ConfigHelper import CConfigHelper
 from base.LogHelper import CLogHelper
-
-# from flask_sqlalchemy import SQLAlchemy
-
 
 # log对象
 log = CLogHelper()
@@ -16,7 +14,7 @@ log = CLogHelper()
 conf = CConfigHelper()
 
 # db对象
-# db = SQLAlchemy()
+db = SQLAlchemy()
 
 # cache对象
 cache = FlaskRedis()
