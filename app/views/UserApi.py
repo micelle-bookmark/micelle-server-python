@@ -25,30 +25,62 @@ class UserRegisterArgs(object):
 
     @staticmethod
     def load(args):
-        if 'username' not in args or \
-           'email' not in args:
+        if 'email' not in args or \
+           'password' not in args:
             raise AppError.ApiArgsError(
                 ErrorCode.ERROR_API_ARGS_VALIDATION_FAIL,
-                u"缺少参数 username 或者 email"
+                u"缺少参数 password 或者 email"
             )
 
         r = UserRegisterArgs()
-        r.username = args['username']
+        r.password = args['password']
         r.email = args['email']
         return r
 
     def __unicode__(self):
-        return u'[UserRegisterArgs] username={}, email={}'.format(
-            self.username,
-            self.email
+        return u'[{}] email={}, password={}'.format(
+            self.__class__.__name__,
+            self.email,
+            self.password
         )
 
 
-@bp.route("register", methods=["GET"])
-@ApiHelper.api_get_args_parser(UserRegisterArgs)
-def api_user_register(cls):
+@bp.route("register", methods=["POST"])
+@ApiHelper.api_post_args_parser(UserRegisterArgs)
+def api_user_register(register_args):
     """
     用户注册接口
     """
-    log.info(u"user register, {}".format(unicode(cls)))
+    return {}
+
+
+class UserLoginArgs(object):
+    """用户登录接口参数"""
+
+    @staticmethod
+    def load(args):
+        if 'email' not in args or \
+           'password' not in args:
+            raise AppError.ApiArgsError(
+                ErrorCode.ERROR_API_ARGS_VALIDATION_FAIL,
+                u"缺少参数 password 或者 email"
+            )
+
+        r = UserLoginArgs()
+        r.password = args['password']
+        r.email = args['email']
+        return r
+
+    def __unicode__(self):
+        return u'[{}] email={}, password={}'.format(
+            self.__class__.__name__,
+            self.email,
+            self.password
+        )
+
+
+@bp.route("login", methods=["POST"])
+@ApiHelper.api_post_args_parser(UserLoginArgs)
+def api_user_login(login_args):
+    """用户登录接口"""
     return {}
