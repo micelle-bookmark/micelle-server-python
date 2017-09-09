@@ -38,7 +38,7 @@ class UserRegisterArgs(object):
         return r
 
     def __unicode__(self):
-        return u'[{}] email={}, password={}'.format(
+        return u'{}(email={}, password={})'.format(
             self.__class__.__name__,
             self.email,
             self.password
@@ -51,6 +51,7 @@ def api_user_register(register_args):
     """
     用户注册接口
     """
+    log.info("register")
     return {}
 
 
@@ -72,7 +73,7 @@ class UserLoginArgs(object):
         return r
 
     def __unicode__(self):
-        return u'[{}] email={}, password={}'.format(
+        return u'{}(email={}, password={})'.format(
             self.__class__.__name__,
             self.email,
             self.password
