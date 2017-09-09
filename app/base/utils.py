@@ -56,7 +56,7 @@ def make_resp(data, status, msg):
     return:
         字典.
     """
-    return {'data': data, 'status': status, 'msg': msg}
+    return {'data': data, 'errorCode': status, 'message': msg}
 
 
 def format_exception(ex):

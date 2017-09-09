@@ -28,3 +28,4 @@ class Config(object):
     # App config
     APP_SERVICE_NAME = 'micelle'
     APP_LOG_LEVEL = 'info'
+    APP_SERVICE_VERSION = 'v1.0.0'

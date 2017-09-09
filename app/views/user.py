@@ -84,3 +84,10 @@ class UserLoginArgs(object):
 def api_user_login(login_args):
     """用户登录接口"""
     return {}
+
+
+@bp.route("logout", methods=["POST"])
+@ApiHelper.api_post_args_parser(None)
+def api_user_logout():
+    """用户退出登录接口"""
+    return {}

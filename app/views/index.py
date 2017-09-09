@@ -7,7 +7,7 @@ from flask import request
 from flask.blueprints import Blueprint
 
 from base import ApiHelper
-from ext import log
+from ext import conf, log
 
 # 蓝图对象
 bp = Blueprint('index', __name__)
@@ -22,8 +22,8 @@ def api_index():
     首页接口
     """
     return {
-        "service": "micelle",
-        "version": "v1.0.0"
+        "service": conf.config["APP_SERVICE_NAME"],
+        "version": conf.config["APP_SERVICE_VERSION"]
     }
 
 
