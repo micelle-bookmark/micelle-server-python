@@ -1,9 +1,9 @@
 # coding=utf-8
 ''' tools '''
 
-import sys
 import traceback
 
+from .AppError import ApiArgsError
 from .LogHelper import CLogHelper
 
 # 日志输出对象
@@ -176,7 +176,6 @@ def parse_status_arg(args, expect):
     if status not in expect:
         raise ApiArgsError(110, u'参数 status={} 取值错误, 预期值{}'.format(status,
                                                                    expect))
-
     return status
 
 
