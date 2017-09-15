@@ -3,12 +3,7 @@
 
 import sys
 import traceback
-from functools import wraps
-from StringIO import StringIO
 
-from flask import jsonify, request
-
-from .AppError import ApiArgsError, AppErrorBase
 from .LogHelper import CLogHelper
 
 # 日志输出对象
@@ -72,12 +67,7 @@ def format_exception(ex):
     exception:
         不抛出异常.
     """
-    exc_type, exc_value, exc_trackback = sys.exc_info()
-    fp = StringIO()
-    traceback.print_exception(exc_type, exc_value, exc_trackback, file=fp)
-    stacks = fp.getvalue()
-    fp.close()
-    return u'{}'.format(stacks)
+    return unicode(traceback.format_exc())
 
 
 def format_resp_time(time_str):
